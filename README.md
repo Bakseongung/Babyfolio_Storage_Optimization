@@ -1,12 +1,3 @@
-# Babyfolio_Storage_Optimization <br>
-## Based on FinOps and ML-driven power consumption optimization
-```
-Using the solution from ktcloudTechUP 1 TEAM’s second Apple project,
-storage optimization can reduce AWS costs
-from 1.8 billion won to 3 million won,
-and Cloudflare costs
-from 100 million won to 3 million won.
-```
 # Babyfolio_스토리지_최적화 <br>
 ## FinOps 및 ML 기반 전력 소비 최적화를 바탕으로
 ```
