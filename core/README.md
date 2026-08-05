@@ -1,5 +1,5 @@
 ### core
-- IP:172.16.8.144
+- IP:$core_ip
 -  Memory: 6GB
 -  Processors: 2
 - HardDisk (SCSI): 30GB
