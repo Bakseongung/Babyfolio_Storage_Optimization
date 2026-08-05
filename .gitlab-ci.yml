@@ -9,7 +9,9 @@ stages:
 # 2. IP 주소 하드코딩 차단 스크립트
 check_hardcoded_ip:
   stage: test
-  image: alpine/git:latest # 👈 [핵심!] Git이 사전 설치된 경량 Alpine 이미지 지정
+  image:
+    name: alpine/git:latest
+    entrypoint: [""] # 👈 [핵심!] 기본 git entrypoint를 해제하여 Shell 스크립트가 실행되도록 설정
   script:
     - echo "🔍 소스코드 내 하드코딩된 IP 주소 검사 중..."
     
