@@ -1,5 +1,5 @@
 ### Terraform
-- IP:172.16.8.145
+- IP:$Terraform_ip
 -  Memory: 2GB
 -  Processors: 2
 - HardDisk (SCSI): 20GB
