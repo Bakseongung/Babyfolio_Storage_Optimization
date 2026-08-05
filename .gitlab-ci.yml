@@ -6,14 +6,14 @@ include:
 stages:
   - test
 
-# 2. IP 주소 하드코딩 차단 스크립트 (환경변수 준수 검사)
+# 2. IP 주소 하드코딩 차단 스크립트
 check_hardcoded_ip:
   stage: test
+  image: alpine/git:latest # 👈 [핵심!] Git이 사전 설치된 경량 Alpine 이미지 지정
   script:
     - echo "🔍 소스코드 내 하드코딩된 IP 주소 검사 중..."
     
-    # 사설 IP 대역 (172.16.x.x ~ 172.31.x.x, 10.x.x.x, 192.168.x.x) 정규식 탐지
-    # (*.env*, .gitlab-ci.yml, README.md 등 환경 설정 파일은 검사 대상에서 제외)
+    # 사설 IP 대역 (172.16.x.x, 10.x.x.x, 192.168.x.x) 정규식 탐지
     - |
       IP_FOUND=$(git grep -E -n '(172\.(1[6-9]|2[0-9]|3[0-1])|10\.[0-9]{1,3}|192\.168\.)\.[0-9]{1,3}\.[0-9]{1,3}' -- ':!*.gitlab-ci.yml' ':!*.env*' ':!README.md' ':!*.gitignore' || true)
       
