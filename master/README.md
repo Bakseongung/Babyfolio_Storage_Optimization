@@ -1,5 +1,5 @@
 ### k8s-master(ONLY K8S CONTROL PLANE)
-- IP:172.16.8.140
+- IP:$master_ip
 -  Memory: 4GB
 -  Processors: 2
 - HardDisk (SCSI): 30GB
