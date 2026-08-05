@@ -1,5 +1,5 @@
 ### worker1
-- IP:172.16.8.141
+- IP:$worker1_ip
 -  Memory: 4GB
 -  Processors: 2
 - HardDisk (SCSI): 30GB
