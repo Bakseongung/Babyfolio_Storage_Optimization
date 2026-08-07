@@ -1,0 +1,50 @@
+{
+  "name": "@family-frame/backend",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "dev": "node --env-file-if-exists=../.env ./node_modules/@nestjs/cli/bin/nest.js start --watch",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "start": "node --env-file-if-exists=../.env dist/main.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1099.0",
+    "@aws-sdk/s3-request-presigner": "3.1099.0",
+    "@nestjs/common": "11.1.28",
+    "@nestjs/core": "11.1.28",
+    "@nestjs/platform-express": "11.1.28",
+    "@nestjs/swagger": "11.4.6",
+    "@nestjs/throttler": "^6.5.0",
+    "@prisma/adapter-pg": "7.9.1",
+    "@prisma/client": "7.9.1",
+    "argon2": "0.45.1",
+    "class-transformer": "0.5.1",
+    "class-validator": "0.15.1",
+    "cookie-parser": "1.4.7",
+    "dotenv": "17.2.3",
+    "pg": "8.22.0",
+    "prisma": "7.9.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "sharp": "0.35.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.2",
+    "@nestjs/cli": "11.0.16",
+    "@nestjs/testing": "11.1.28",
+    "@types/cookie-parser": "1.4.10",
+    "@types/express": "5.0.6",
+    "@types/node": "24.10.1",
+    "@types/pg": "8.15.6",
+    "@types/supertest": "6.0.3",
+    "eslint": "9.39.2",
+    "supertest": "7.2.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.65.0",
+    "vitest": "4.1.10"
+  }
+}

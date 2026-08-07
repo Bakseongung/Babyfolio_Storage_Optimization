@@ -1,0 +1,190 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum FamilyRole {
+  OWNER
+  MEMBER
+}
+
+enum MediaStatus {
+  PENDING_UPLOAD
+  PROCESSING
+  READY
+  FAILED
+  DELETED
+}
+
+enum MediaDateSource {
+  EXIF_ORIGINAL
+  EXIF_CREATED
+  FILE_MODIFIED
+  USER
+  DEFAULT
+}
+
+enum AssetStatus {
+  READY
+  ORPHANED
+  UPLOADING
+  DELETING
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String
+  displayName  String
+  createdAt    DateTime       @default(now())
+  sessions     Session[]
+  memberships  FamilyMember[]
+  uploaded     Media[]        @relation("UploadedBy")
+  createdInvites FamilyInvite[] @relation("InviteCreator")
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Family {
+  id        String         @id @default(cuid())
+  name      String
+  createdAt DateTime       @default(now())
+  members   FamilyMember[]
+  albums    Album[]
+  assets    MediaAsset[]
+  invites   FamilyInvite[]
+}
+
+model FamilyMember {
+  id        String     @id @default(cuid())
+  familyId  String
+  userId    String
+  role      FamilyRole @default(MEMBER)
+  createdAt DateTime   @default(now())
+  family    Family     @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([familyId, userId])
+  @@unique([userId])
+}
+
+model FamilyInvite {
+  id          String   @id @default(cuid())
+  familyId    String
+  createdById String
+  email       String
+  tokenHash   String   @unique
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime @default(now())
+  family      Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  createdBy   User     @relation("InviteCreator", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+}
+
+model Album {
+  id              String                @id @default(cuid())
+  familyId        String
+  name            String
+  createdAt       DateTime              @default(now())
+  family          Family                @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  mediaItems          Media[]
+  representatives DailyRepresentative[]
+  childTags       ChildTag[]
+
+  @@index([familyId])
+}
+
+model ChildTag {
+  id        String          @id @default(cuid())
+  albumId   String
+  name      String
+  createdAt DateTime        @default(now())
+  album     Album           @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  mediaItems    MediaChildTag[]
+
+  @@unique([albumId, name])
+  @@index([albumId])
+}
+
+model MediaAsset {
+  id           String      @id @default(cuid())
+  familyId     String
+  mimeType     String
+  width        Int
+  height       Int
+  originalKey  String
+  displayKey   String
+  thumbnailKey String
+  status       AssetStatus @default(READY)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  family       Family      @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  mediaItem    Media?
+
+  @@index([familyId])
+}
+
+model Media {
+  id             String      @id @default(cuid())
+  albumId        String
+  mediaAssetId   String?     @unique
+  uploadedById   String
+  albumDate      DateTime    @db.Date
+  capturedAt     DateTime?
+  dateSource     MediaDateSource @default(USER)
+  clientUploadId String
+  tempObjectKey  String?
+  originalName   String
+  uploadContentType String
+  uploadSize     Int
+  status         MediaStatus @default(PENDING_UPLOAD)
+  failureReason  String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  album          Album       @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  mediaAsset     MediaAsset? @relation(fields: [mediaAssetId], references: [id])
+  uploadedBy     User        @relation("UploadedBy", fields: [uploadedById], references: [id])
+  representative DailyRepresentative?
+  childTags      MediaChildTag[]
+
+  @@unique([albumId, clientUploadId])
+  @@index([albumId, albumDate, status])
+  @@index([albumId, status, albumDate(sort: Desc), createdAt(sort: Desc), id(sort: Desc)], map: "Media_feed_idx")
+}
+
+model MediaChildTag {
+  mediaId    String
+  childTagId String
+  media      Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  childTag   ChildTag @relation(fields: [childTagId], references: [id], onDelete: Cascade)
+
+  @@id([mediaId, childTagId])
+  @@index([childTagId])
+}
+
+model DailyRepresentative {
+  id        String   @id @default(cuid())
+  albumId   String
+  albumDate DateTime @db.Date
+  mediaId   String   @unique
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  media     Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([albumId, albumDate])
+}

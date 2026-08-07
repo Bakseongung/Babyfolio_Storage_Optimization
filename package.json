@@ -1,0 +1,25 @@
+{
+  "name": "family-frame",
+  "private": true,
+  "packageManager": "pnpm@10.15.0",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:all": "docker compose up -d --wait postgres minio && docker compose run --rm minio-init && pnpm db:migrate:deploy && pnpm dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "db:generate": "pnpm --filter ./backend prisma:generate",
+    "db:migrate": "pnpm --filter ./backend prisma:migrate",
+    "db:migrate:deploy": "pnpm --filter ./backend exec prisma migrate deploy"
+  },
+  "pnpm": {
+    "overrides": {
+      "@angular-devkit/core>ajv": "8.18.0",
+      "@nestjs/swagger>js-yaml": "5.2.2",
+      "@angular-devkit/core>picomatch": "4.0.4",
+      "next>postcss": "8.5.25",
+      "next>sharp": "0.35.3"
+    }
+  }
+}
