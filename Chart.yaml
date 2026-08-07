@@ -1,6 +1,6 @@
 apiVersion: v2
-name: demo-app
-description: Demo App Helm Chart
+name: babyfolio-storage-optimization
+description: Babyfolio Storage Optimization Helm Chart
 type: application
 version: 0.1.0
 appVersion: "1.0.0"
