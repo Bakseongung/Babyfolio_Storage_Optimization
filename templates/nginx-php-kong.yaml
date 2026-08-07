@@ -134,7 +134,7 @@ metadata:
   namespace: demo-app
   annotations:
     # ArgoCD UI 상단에 Grafana 이동 버튼 생성
-    link.argocd.argoproj.io/external-link: "http://{{ .Values.grafanaIp }}"
+    link.argocd.argoproj.io/external-link: "http://{{ .Values.grafana_ip }}"
 spec:
   ingressClassName: kong
 
