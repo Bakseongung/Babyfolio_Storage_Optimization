@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "babyfolio-storage-optimization.fullname" . }}-config
+  labels:
+    {{- include "babyfolio-storage-optimization.labels" . | nindent 4 }}
+data:
+  APP_ORIGIN: {{ .Values.config.appOrigin | quote }}
+  API_ORIGIN: {{ .Values.config.apiOrigin | quote }}
+  SESSION_COOKIE_NAME: {{ .Values.config.sessionCookieName | quote }}
+  SESSION_TTL_DAYS: {{ .Values.config.sessionTtlDays | quote }}
+  S3_ENDPOINT: {{ .Values.config.s3Endpoint | quote }}
+  S3_REGION: {{ .Values.config.s3Region | quote }}
+  S3_BUCKET: {{ .Values.config.s3Bucket | quote }}
+  S3_FORCE_PATH_STYLE: {{ .Values.config.s3ForcePathStyle | quote }}
+  SIGNED_URL_TTL_SECONDS: {{ .Values.config.signedUrlTtlSeconds | quote }}
+  MAX_ACTIVE_UPLOADS_PER_USER: {{ .Values.config.maxActiveUploadsPerUser | quote }}

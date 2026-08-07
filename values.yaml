@@ -1,1 +1,174 @@
 grafana_ip: "grafana_ip"
+
+global:
+  imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: false
+  annotations: {}
+  name: ""
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: example.invalid/family-frame-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  containerPort: 3000
+  service:
+    type: ClusterIP
+    port: 80
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: http
+    periodSeconds: 2
+    failureThreshold: 30
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 5
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: false
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+backend:
+  replicaCount: 1
+  image:
+    repository: example.invalid/family-frame-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  containerPort: 4000
+  service:
+    type: ClusterIP
+    port: 4000
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  startupProbe:
+    httpGet:
+      path: /api/health/live
+      port: http
+    periodSeconds: 2
+    failureThreshold: 30
+  readinessProbe:
+    httpGet:
+      path: /api/health/ready
+      port: http
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  livenessProbe:
+    httpGet:
+      path: /api/health/live
+      port: http
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 5
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: false
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+config:
+  appOrigin: https://rakko.site
+  apiOrigin: https://rakko.site
+  sessionCookieName: family_frame_session
+  sessionTtlDays: "7"
+  s3Endpoint: https://s3.rakko.site
+  s3Region: us-east-1
+  s3Bucket: family-frame
+  s3ForcePathStyle: "true"
+  signedUrlTtlSeconds: "300"
+  maxActiveUploadsPerUser: "5"
+
+existingSecret:
+  name: family-frame-secrets
+  keys:
+    databaseUrl: DATABASE_URL
+    s3AccessKeyId: S3_ACCESS_KEY_ID
+    s3SecretAccessKey: S3_SECRET_ACCESS_KEY
+
+migration:
+  enabled: true
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 300
+  annotations: {}
+  command:
+    - node
+    - node_modules/prisma/build/index.js
+  args:
+    - migrate
+    - deploy
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Disabled by default because templates/nginx-php-kong.yaml already owns
+# rakko.site /. Enable only after assigning non-conflicting hosts or retiring
+# the temporary nginx/php test Ingress.
+ingress:
+  enabled: false
+  className: kong
+  annotations:
+    konghq.com/strip-path: "false"
+  host: rakko.site
+  frontend:
+    path: /
+    pathType: Prefix
+  backend:
+    path: /api
+    pathType: Prefix
+  tls: []

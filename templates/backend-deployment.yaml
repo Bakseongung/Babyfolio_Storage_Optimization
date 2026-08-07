@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "babyfolio-storage-optimization.fullname" . }}-backend
+  labels:
+    {{- include "babyfolio-storage-optimization.componentLabels" (dict "root" . "component" "backend") | nindent 4 }}
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "babyfolio-storage-optimization.selectorLabels" (dict "root" . "component" "backend") | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.backend.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- with .Values.backend.podLabels }}
+        {{- omit . "app.kubernetes.io/name" "app.kubernetes.io/instance" "app.kubernetes.io/component" | toYaml | nindent 8 }}
+        {{- end }}
+        {{- include "babyfolio-storage-optimization.selectorLabels" (dict "root" . "component" "backend") | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "babyfolio-storage-optimization.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.backend.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.backend.containerPort }}
+              protocol: TCP
+          env:
+            - name: PORT
+              value: {{ .Values.backend.containerPort | quote }}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingSecret.name | quote }}
+                  key: {{ .Values.existingSecret.keys.databaseUrl | quote }}
+            - name: S3_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingSecret.name | quote }}
+                  key: {{ .Values.existingSecret.keys.s3AccessKeyId | quote }}
+            - name: S3_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingSecret.name | quote }}
+                  key: {{ .Values.existingSecret.keys.s3SecretAccessKey | quote }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "babyfolio-storage-optimization.fullname" . }}-config
+          startupProbe:
+            {{- toYaml .Values.backend.startupProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.backend.readinessProbe | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.backend.livenessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+      {{- with .Values.backend.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

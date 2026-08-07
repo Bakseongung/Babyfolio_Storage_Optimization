@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "AssetStatus" ADD VALUE IF NOT EXISTS 'UPLOADING';
