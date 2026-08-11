@@ -129,7 +129,7 @@ config:
   sessionTtlDays: "7"
   s3Endpoint: https://s3.rakko.site
   s3Region: us-east-1
-  s3Bucket: family-frame
+  s3Bucket: baby-album-store
   s3ForcePathStyle: "true"
   signedUrlTtlSeconds: "300"
   maxActiveUploadsPerUser: "5"
