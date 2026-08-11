@@ -124,7 +124,7 @@ backend:
 
 config:
   appOrigin: https://rakko.site
-  apiOrigin: https://rakko.site
+  apiOrigin: http://apple-app-babyfolio-storage-optimization-backend:4000
   sessionCookieName: family_frame_session
   sessionTtlDays: "7"
   s3Endpoint: https://s3.rakko.site
