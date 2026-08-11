@@ -56,6 +56,13 @@ spec:
           ports:
             - name: http
               containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
           volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx/conf.d/default.conf
@@ -79,6 +86,13 @@ spec:
           ports:
             - name: php-fpm
               containerPort: 9000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
           volumeMounts:
             - name: php-source
               mountPath: /var/www/html
