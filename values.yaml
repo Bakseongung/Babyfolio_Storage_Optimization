@@ -68,8 +68,8 @@ frontend:
 backend:
   replicaCount: 1
   image:
-    repository: example.invalid/family-frame-backend
-    tag: latest
+    repository: docker.io/library/babyfolio-backend
+    tag: dev
     pullPolicy: IfNotPresent
   containerPort: 4000
   service:
