@@ -164,7 +164,7 @@ migration:
 # rakko.site /. Enable only after assigning non-conflicting hosts or retiring
 # the temporary nginx/php test Ingress.
 ingress:
-  enabled: false
+  enabled: true
   className: kong
   annotations:
     konghq.com/strip-path: "false"
