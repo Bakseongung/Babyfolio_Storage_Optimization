@@ -15,8 +15,8 @@ serviceAccount:
 frontend:
   replicaCount: 1
   image:
-    repository: example.invalid/family-frame-frontend
-    tag: latest
+    repository: docker.io/library/babyfolio-frontend
+    tag: dev
     pullPolicy: IfNotPresent
   containerPort: 3000
   service:
