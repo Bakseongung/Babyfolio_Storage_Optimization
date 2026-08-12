@@ -15,7 +15,7 @@ serviceAccount:
 frontend:
   replicaCount: 1
   image:
-    repository: docker.io/library/babyfolio-frontend
+    repository: registry.gitlab.com/bakseongung/apple/frontend
     tag: dev
     pullPolicy: IfNotPresent
   containerPort: 3000
@@ -70,7 +70,7 @@ frontend:
 backend:
   replicaCount: 1
   image:
-    repository: docker.io/library/babyfolio-backend
+    repository: registry.gitlab.com/bakseongung/apple/backend
     tag: dev
     pullPolicy: IfNotPresent
   containerPort: 4000
