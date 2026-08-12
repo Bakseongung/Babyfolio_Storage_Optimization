@@ -1,7 +1,8 @@
 grafana_ip: "grafana_ip"
 
 global:
-  imagePullSecrets: []
+  imagePullSecrets:
+    - name: gitlab-com-registry
 
 nameOverride: ""
 fullnameOverride: ""
