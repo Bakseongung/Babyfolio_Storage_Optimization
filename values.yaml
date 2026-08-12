@@ -17,7 +17,7 @@ frontend:
   replicaCount: 1
   image:
     repository: registry.gitlab.com/bakseongung/apple/frontend
-    tag: dev
+    tag: datefix-20260812170259
     pullPolicy: IfNotPresent
   containerPort: 3000
   service:

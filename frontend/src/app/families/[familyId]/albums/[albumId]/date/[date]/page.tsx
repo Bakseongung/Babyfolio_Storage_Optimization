@@ -54,12 +54,21 @@ export default async function DatePage({
   const uploadHref = `/families/${familyId}/albums/${albumId}/upload?date=${date}`;
   const calendarParams = mediaFilterPageParams(filter, { month });
   const dateValue = new Date(`${date}T00:00:00+09:00`);
-  const yearLabel = new Intl.DateTimeFormat("ko-KR", { year: "numeric" }).format(dateValue);
-  const dateLabel = new Intl.DateTimeFormat("ko-KR", {
-    month: "long",
-    day: "numeric"
-  }).format(dateValue);
-  const weekdayLabel = new Intl.DateTimeFormat("ko-KR", { weekday: "long" }).format(dateValue);
+  const yearLabel = new Intl.DateTimeFormat("ko-KR", {
+  year: "numeric",
+  timeZone: "Asia/Seoul"
+}).format(dateValue);
+
+const dateLabel = new Intl.DateTimeFormat("ko-KR", {
+  month: "long",
+  day: "numeric",
+  timeZone: "Asia/Seoul"
+}).format(dateValue);
+
+const weekdayLabel = new Intl.DateTimeFormat("ko-KR", {
+  weekday: "long",
+  timeZone: "Asia/Seoul"	
+}).format(dateValue);
   return (
     <section>
       <div className="date-page-header">
