@@ -42,14 +42,13 @@ export class StorageService {
     }
   });
 
-  presignUpload(key: string, contentType: string, contentLength: number) {
+  presignUpload(key: string, contentType: string, _contentLength: number) {
     return getSignedUrl(
       this.client,
       new PutObjectCommand({
         Bucket: this.config.bucket,
         Key: key,
         ContentType: contentType,
-        ContentLength: contentLength
       }),
       { expiresIn: this.config.signedUrlTtl }
     );
